@@ -36,23 +36,12 @@ public class JobServiceImpl implements JobService {
                 .toList();
     }
 
-    private JobWithCompanyDTO convertToDto(Job job) {
-
-        JobWithCompanyDTO jobWithCompanyDTO = new JobWithCompanyDTO();
-        jobWithCompanyDTO.setJob(job);
-
-        Company company = restTemplate
-                .getForObject("http://COMPANYMS:8081/companies/" + job.getCompanyId(), Company.class);
-
-        jobWithCompanyDTO.setCompany(company);
-
-        return jobWithCompanyDTO;
-    }
-
     @Override
-    public Job getJobById(Long id) {
+    public JobWithCompanyDTO getJobById(Long jobId) {
 
-        return jobRepository.findById(id).orElse(null);
+        Job job = jobRepository.findById(jobId).orElse(null);
+
+        return convertToDto(job);
     }
     @Override
     public void createJob(@NotNull Job job) {
@@ -86,5 +75,18 @@ public class JobServiceImpl implements JobService {
             return true;
         }
         return false;
+    }
+
+    private JobWithCompanyDTO convertToDto(Job job) {
+
+        JobWithCompanyDTO jobWithCompanyDTO = new JobWithCompanyDTO();
+        jobWithCompanyDTO.setJob(job);
+
+        Company company = restTemplate
+                .getForObject("http://COMPANYMS:8081/companies/" + job.getCompanyId(), Company.class);
+
+        jobWithCompanyDTO.setCompany(company);
+
+        return jobWithCompanyDTO;
     }
 }
