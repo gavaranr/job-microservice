@@ -3,12 +3,17 @@ package com.naveenx.jobms.job.impl;
 import com.naveenx.jobms.job.Job;
 import com.naveenx.jobms.job.JobRepository;
 import com.naveenx.jobms.job.JobService;
+import com.naveenx.jobms.job.dto.JobWithCompanyDTO;
+import com.naveenx.jobms.job.external.Company;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class JobServiceImpl implements JobService {
@@ -20,8 +25,27 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public List<Job> findAll() {
-        return jobRepository.findAll();
+    public List<JobWithCompanyDTO> findAll() {
+
+        List<Job> jobs = jobRepository.findAll();
+
+        return jobs.stream()
+                .map(this::convertToDto)
+                .toList();
+    }
+
+    private JobWithCompanyDTO convertToDto(Job job) {
+
+        RestTemplate restTemplate = new RestTemplate();
+        JobWithCompanyDTO jobWithCompanyDTO = new JobWithCompanyDTO();
+        jobWithCompanyDTO.setJob(job);
+
+        Company company = restTemplate
+                .getForObject("http://localhost:8081/companies/" + job.getCompanyId(), Company.class);
+
+        jobWithCompanyDTO.setCompany(company);
+
+        return jobWithCompanyDTO;
     }
 
     @Override

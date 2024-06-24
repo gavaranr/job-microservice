@@ -1,5 +1,6 @@
 package com.naveenx.jobms.job;
 
+import com.naveenx.jobms.job.dto.JobWithCompanyDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ public class JobController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Job>> findAll () {
+    public ResponseEntity<List<JobWithCompanyDTO>> findAll () {
         return ResponseEntity.ok(jobService.findAll());
     }
 
