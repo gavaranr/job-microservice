@@ -10,16 +10,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class JobServiceImpl implements JobService {
 
     @Autowired
     JobRepository jobRepository;
+
+    @Autowired
+    RestTemplate restTemplate;
+
     public JobServiceImpl (JobRepository jobRepository) {
         this.jobRepository = jobRepository;
     }
@@ -36,12 +38,11 @@ public class JobServiceImpl implements JobService {
 
     private JobWithCompanyDTO convertToDto(Job job) {
 
-        RestTemplate restTemplate = new RestTemplate();
         JobWithCompanyDTO jobWithCompanyDTO = new JobWithCompanyDTO();
         jobWithCompanyDTO.setJob(job);
 
         Company company = restTemplate
-                .getForObject("http://localhost:8081/companies/" + job.getCompanyId(), Company.class);
+                .getForObject("http://COMPANYMS:8081/companies/" + job.getCompanyId(), Company.class);
 
         jobWithCompanyDTO.setCompany(company);
 

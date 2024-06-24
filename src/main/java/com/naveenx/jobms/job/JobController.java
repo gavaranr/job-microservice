@@ -35,8 +35,6 @@ public class JobController {
     public ResponseEntity<String> createJob (@RequestBody Job job) {
         jobService.createJob(job);
 
-//        Company c = job.getCompany();
-
         return new ResponseEntity<>
                 ("Job added successfully", HttpStatus.CREATED);
     }
